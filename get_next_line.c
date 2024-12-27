@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tsargsya <tsargsya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/20 18:06:35 by tsargsya          #+#    #+#             */
-/*   Updated: 2024/12/26 18:49:05 by tsargsya         ###   ########.fr       */
+/*   Created: 2024/12/26 19:21:57 by tsargsya          #+#    #+#             */
+/*   Updated: 2024/12/27 16:03:00 by tsargsya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,32 +16,72 @@
 
 static void	shift_buffer_after_nl(char *readbuffer);
 static char	*strdup_till_nl(char *str);
+static char	*read_and_join(int fd, char **buffers, char *line);
+static char	*handle_empty_line(char **buffers, int fd, char *line);
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE + 1] = {0};
 	char		*line;
-	int			bytes;
+	static char	*buffers[MAX_FD];
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd >= MAX_FD || BUFFER_SIZE <= 0)
 		return (NULL);
-	bytes = 1;
-	line = strdup_till_nl(buffer);
+	if (!buffers[fd])
+	{
+		buffers[fd] = malloc(BUFFER_SIZE + 1);
+		if (!buffers[fd])
+			return (NULL);
+		buffers[fd][0] = '\0';
+	}
+	line = strdup_till_nl(buffers[fd]);
 	if (!line)
 		return (NULL);
+	line = read_and_join(fd, buffers, line);
+	if (!line)
+		return (NULL);
+	line = handle_empty_line(buffers, fd, line);
+	if (!line)
+		return (NULL);
+	shift_buffer_after_nl(buffers[fd]);
+	return (line);
+}
+
+static char	*read_and_join(int fd, char **buffers, char *line)
+{
+	int	bytes;
+
+	bytes = 1;
 	while (bytes > 0 && !ft_strchr(line, '\n'))
 	{
-		bytes = read(fd, buffer, BUFFER_SIZE);
+		bytes = read(fd, buffers[fd], BUFFER_SIZE);
 		if (bytes == -1)
-			return (ft_bzero(buffer, BUFFER_SIZE), free(line), NULL);
-		buffer[bytes] = '\0';
-		line = ft_strjoin(line, buffer);
-		if (!line)
+		{
+			free(buffers[fd]);
+			buffers[fd] = NULL;
+			free(line);
 			return (NULL);
+		}
+		buffers[fd][bytes] = '\0';
+		line = ft_strjoin(line, buffers[fd]);
+		if (!line)
+		{
+			free(buffers[fd]);
+			buffers[fd] = NULL;
+			return (NULL);
+		}
 	}
-	if (!line[0] && bytes == 0)
-		return (free(line), NULL);
-	shift_buffer_after_nl(buffer);
+	return (line);
+}
+
+static char	*handle_empty_line(char **buffers, int fd, char *line)
+{
+	if (!line[0])
+	{
+		free(buffers[fd]);
+		buffers[fd] = NULL;
+		free(line);
+		return (NULL);
+	}
 	return (line);
 }
 
