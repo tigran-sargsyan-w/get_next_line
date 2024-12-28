@@ -6,7 +6,7 @@
 /*   By: tsargsya <tsargsya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 19:22:32 by tsargsya          #+#    #+#             */
-/*   Updated: 2024/12/27 16:03:37 by tsargsya         ###   ########.fr       */
+/*   Updated: 2024/12/28 14:08:29 by tsargsya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # endif
 
 char	*get_next_line(int fd);
-char	*ft_strjoin(char *line, char *readbuffer);
+char	*strjoin_till_nl(char *line, char *buffer);
 void	ft_bzero(void *s, size_t n);
 char	*ft_strchr(const char *s, int c);
 

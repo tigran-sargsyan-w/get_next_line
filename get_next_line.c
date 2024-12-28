@@ -6,7 +6,7 @@
 /*   By: tsargsya <tsargsya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 19:21:57 by tsargsya          #+#    #+#             */
-/*   Updated: 2024/12/27 16:03:00 by tsargsya         ###   ########.fr       */
+/*   Updated: 2024/12/28 14:08:00 by tsargsya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static void	shift_buffer_after_nl(char *readbuffer);
+static void	shift_buffer_after_nl(char *buffer);
 static char	*strdup_till_nl(char *str);
 static char	*read_and_join(int fd, char **buffers, char *line);
 static char	*handle_empty_line(char **buffers, int fd, char *line);
@@ -62,7 +62,7 @@ static char	*read_and_join(int fd, char **buffers, char *line)
 			return (NULL);
 		}
 		buffers[fd][bytes] = '\0';
-		line = ft_strjoin(line, buffers[fd]);
+		line = strjoin_till_nl(line, buffers[fd]);
 		if (!line)
 		{
 			free(buffers[fd]);
@@ -85,24 +85,24 @@ static char	*handle_empty_line(char **buffers, int fd, char *line)
 	return (line);
 }
 
-static void	shift_buffer_after_nl(char *readbuffer)
+static void	shift_buffer_after_nl(char *buffer)
 {
 	size_t	i;
 	size_t	j;
 
 	i = 0;
 	j = 0;
-	while (readbuffer[i] && readbuffer[i] != '\n')
+	while (buffer[i] && buffer[i] != '\n')
 		i++;
-	if (readbuffer[i] == '\n')
+	if (buffer[i] == '\n')
 		i++;
-	while (readbuffer[i])
+	while (buffer[i])
 	{
-		readbuffer[j] = readbuffer[i];
+		buffer[j] = buffer[i];
 		i++;
 		j++;
 	}
-	readbuffer[j] = '\0';
+	buffer[j] = '\0';
 }
 
 static char	*strdup_till_nl(char *str)
