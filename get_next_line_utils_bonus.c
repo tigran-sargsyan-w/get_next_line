@@ -6,7 +6,7 @@
 /*   By: tsargsya <tsargsya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 19:22:28 by tsargsya          #+#    #+#             */
-/*   Updated: 2024/12/26 19:30:33 by tsargsya         ###   ########.fr       */
+/*   Updated: 2024/12/28 14:06:09 by tsargsya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 static size_t	ft_strlen(char *str);
 static void		*ft_memcpy(void *dest, const void *src, size_t n);
 
-char	*ft_strjoin(char *line, char *readbuffer)
+char	*strjoin_till_nl(char *line, char *buffer)
 {
 	char	*str;
 	size_t	size;
@@ -24,12 +24,12 @@ char	*ft_strjoin(char *line, char *readbuffer)
 	size_t	j;
 
 	i = 0;
-	if (!line || !readbuffer)
+	if (!line || !buffer)
 		return (NULL);
 	j = ft_strlen(line);
-	while (readbuffer[i] && readbuffer[i] != '\n')
+	while (buffer[i] && buffer[i] != '\n')
 		i++;
-	if (readbuffer[i] == '\n')
+	if (buffer[i] == '\n')
 		i++;
 	size = i + j;
 	str = malloc((size + 1) * sizeof(char));
@@ -37,10 +37,10 @@ char	*ft_strjoin(char *line, char *readbuffer)
 		return (free(line), NULL);
 	ft_memcpy(str, line, j);
 	i = 0;
-	while (readbuffer[i] && readbuffer[i] != '\n')
-		str[j++] = readbuffer[i++];
-	if (readbuffer[i] == '\n')
-		str[j++] = readbuffer[i++];
+	while (buffer[i] && buffer[i] != '\n')
+		str[j++] = buffer[i++];
+	if (buffer[i] == '\n')
+		str[j++] = buffer[i++];
 	str[j] = '\0';
 	return (free(line), str);
 }
