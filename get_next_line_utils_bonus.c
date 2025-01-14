@@ -6,15 +6,25 @@
 /*   By: tsargsya <tsargsya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 19:22:28 by tsargsya          #+#    #+#             */
-/*   Updated: 2024/12/28 14:06:09 by tsargsya         ###   ########.fr       */
+/*   Updated: 2025/01/11 20:01:51 by tsargsya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 #include <stdlib.h>
 
-static size_t	ft_strlen(char *str);
-static void		*ft_memcpy(void *dest, const void *src, size_t n);
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if ((char)c == 0)
+		return ((char *)s);
+	return (NULL);
+}
 
 char	*strjoin_till_nl(char *line, char *buffer)
 {
@@ -45,33 +55,7 @@ char	*strjoin_till_nl(char *line, char *buffer)
 	return (free(line), str);
 }
 
-void	ft_bzero(void *s, size_t n)
-{
-	unsigned char	*ptr;
-
-	ptr = (unsigned char *)s;
-	while (n)
-	{
-		*ptr = 0;
-		ptr++;
-		n--;
-	}
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	if ((char)c == 0)
-		return ((char *)s);
-	return (NULL);
-}
-
-static size_t	ft_strlen(char *str)
+size_t	ft_strlen(char *str)
 {
 	size_t	i;
 
@@ -81,7 +65,7 @@ static size_t	ft_strlen(char *str)
 	return (i);
 }
 
-static void	*ft_memcpy(void *dest, const void *src, size_t n)
+void	*ft_memcpy(void *dest, const void *src, size_t n)
 {
 	size_t	i;
 
