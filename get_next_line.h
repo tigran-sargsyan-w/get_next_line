@@ -6,7 +6,7 @@
 /*   By: tsargsya <tsargsya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 18:07:11 by tsargsya          #+#    #+#             */
-/*   Updated: 2024/12/28 14:08:14 by tsargsya         ###   ########.fr       */
+/*   Updated: 2025/01/11 19:59:26 by tsargsya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,12 @@
 
 char	*get_next_line(int fd);
 char	*strjoin_till_nl(char *line, char *buffer);
-void	ft_bzero(void *s, size_t n);
 char	*ft_strchr(const char *s, int c);
+void	shift_buffer_after_nl(char *buffer);
+char	*strdup_till_nl(char *str);
+char	*read_and_join(int fd, char *buffers, char *line);
+char	*handle_empty_line(char *buffers, char *line);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
+size_t	ft_strlen(char *str);
 
 #endif

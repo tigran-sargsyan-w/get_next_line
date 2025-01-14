@@ -6,7 +6,7 @@
 /*   By: tsargsya <tsargsya@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/26 19:21:57 by tsargsya          #+#    #+#             */
-/*   Updated: 2024/12/28 14:08:00 by tsargsya         ###   ########.fr       */
+/*   Updated: 2025/01/13 14:58:47 by tsargsya         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,98 +14,36 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static void	shift_buffer_after_nl(char *buffer);
-static char	*strdup_till_nl(char *str);
-static char	*read_and_join(int fd, char **buffers, char *line);
-static char	*handle_empty_line(char **buffers, int fd, char *line);
-
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*buffers[MAX_FD];
+	static char	buffers[MAX_FD][BUFFER_SIZE + 1];
 
 	if (fd < 0 || fd >= MAX_FD || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!buffers[fd])
-	{
-		buffers[fd] = malloc(BUFFER_SIZE + 1);
-		if (!buffers[fd])
-			return (NULL);
-		buffers[fd][0] = '\0';
-	}
 	line = strdup_till_nl(buffers[fd]);
 	if (!line)
+	{
+		buffers[fd][0] = '\0';
 		return (NULL);
-	line = read_and_join(fd, buffers, line);
+	}
+	line = read_and_join(fd, buffers[fd], line);
 	if (!line)
+	{
+		buffers[fd][0] = '\0';
 		return (NULL);
-	line = handle_empty_line(buffers, fd, line);
+	}
+	line = handle_empty_line(buffers[fd], line);
 	if (!line)
+	{
+		buffers[fd][0] = '\0';
 		return (NULL);
+	}
 	shift_buffer_after_nl(buffers[fd]);
 	return (line);
 }
 
-static char	*read_and_join(int fd, char **buffers, char *line)
-{
-	int	bytes;
-
-	bytes = 1;
-	while (bytes > 0 && !ft_strchr(line, '\n'))
-	{
-		bytes = read(fd, buffers[fd], BUFFER_SIZE);
-		if (bytes == -1)
-		{
-			free(buffers[fd]);
-			buffers[fd] = NULL;
-			free(line);
-			return (NULL);
-		}
-		buffers[fd][bytes] = '\0';
-		line = strjoin_till_nl(line, buffers[fd]);
-		if (!line)
-		{
-			free(buffers[fd]);
-			buffers[fd] = NULL;
-			return (NULL);
-		}
-	}
-	return (line);
-}
-
-static char	*handle_empty_line(char **buffers, int fd, char *line)
-{
-	if (!line[0])
-	{
-		free(buffers[fd]);
-		buffers[fd] = NULL;
-		free(line);
-		return (NULL);
-	}
-	return (line);
-}
-
-static void	shift_buffer_after_nl(char *buffer)
-{
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	j = 0;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	if (buffer[i] == '\n')
-		i++;
-	while (buffer[i])
-	{
-		buffer[j] = buffer[i];
-		i++;
-		j++;
-	}
-	buffer[j] = '\0';
-}
-
-static char	*strdup_till_nl(char *str)
+char	*strdup_till_nl(char *str)
 {
 	char	*dup;
 	size_t	len;
@@ -127,4 +65,60 @@ static char	*strdup_till_nl(char *str)
 	}
 	dup[i] = '\0';
 	return (dup);
+}
+
+char	*read_and_join(int fd, char *buffers, char *line)
+{
+	int	bytes;
+
+	bytes = 1;
+	while (bytes > 0 && !ft_strchr(line, '\n'))
+	{
+		bytes = read(fd, buffers, BUFFER_SIZE);
+		if (bytes == -1)
+		{
+			buffers[0] = '\0';
+			free(line);
+			return (NULL);
+		}
+		buffers[bytes] = '\0';
+		line = strjoin_till_nl(line, buffers);
+		if (!line)
+		{
+			buffers[0] = '\0';
+			return (NULL);
+		}
+	}
+	return (line);
+}
+
+char	*handle_empty_line(char *buffers, char *line)
+{
+	if (!line[0])
+	{
+		buffers[0] = '\0';
+		free(line);
+		return (NULL);
+	}
+	return (line);
+}
+
+void	shift_buffer_after_nl(char *buffer)
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	j = 0;
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	if (buffer[i] == '\n')
+		i++;
+	while (buffer[i])
+	{
+		buffer[j] = buffer[i];
+		i++;
+		j++;
+	}
+	buffer[j] = '\0';
 }
