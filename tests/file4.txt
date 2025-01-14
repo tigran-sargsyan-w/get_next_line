@@ -1,0 +1,7 @@
+Line 1 of file4
+Line 2 of file4
+Line 3 of file4
+Line 4 of file4
+Line 5 of file4
+Line 6 of file4
+Line 7 of file4
