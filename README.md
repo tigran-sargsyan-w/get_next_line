@@ -1,5 +1,8 @@
 # get_next_line
 
+✅ **Completed**: Mandatory + Bonus  
+🏅 **Score**: 125/100
+
 ![42 Logo](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXfAZMOWHDQ3DKE63A9jWhIqQaKcKqUIXvzg&s)
 
 `get_next_line` is a C programming project where you develop a function that reads a line from a file descriptor. The project focuses on handling file input/output and memory management in C. The main goal is to create an efficient function to read a line from a file, one at a time, until the end of the file is reached.
